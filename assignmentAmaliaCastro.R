@@ -212,7 +212,14 @@ ggplot(data = tss, aes(x = date, y = ndvi, colour = Landcover)) +
 summary(d1_undist)
 summary(d2_defor)
 
+# Write outputs to text file
+write(stat_und, file="statistics_undisturbed",
+      ncolumns = if(is.character(stat_und)) 1 else 5,
+      append = FALSE, sep = " ")
 
+write(stat_defor, file="statistics_undisturbed",
+      ncolumns = if(is.character(stat_defor)) 1 else 5,
+      append = FALSE, sep = " ")
 
 
 

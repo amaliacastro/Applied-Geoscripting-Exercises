@@ -1,17 +1,14 @@
 # Author: Amalia Castro
 # Date: December 2013
-# Dependencies: sp,raster, rgdal
+# Dependencies: sp,raster, rgdal,rasta, ggplot2, rasterVis, RColorBrewer, reshape
 # Description: extracts and characterizes the Landsat time series 
-# of a study area in Brazil
 
-# Note: the input is a .tiff file (not .grd) 
+## Note: the input is a .tiff file (not .grd) 
 # so we read the acquisition dates from dates.csv
-# Note: Plotting the rBrick layers with levelplot sometimes 
+## Note: Plotting the rBrick layers with levelplot sometimes 
 # causes the R session to crash. It could be related to small 
 # space available in the plotting window.
 
-
-# library(utils)
 library(rasta)
 library(raster)
 library(rgdal)
@@ -20,14 +17,15 @@ library(ggplot2)
 library(rasterVis)
 library(RColorBrewer)
 library(reshape)
-library(zoo)
-library(bfast)
-#library(RCurl)
 
-setwd("/Users/Amalia/Documents/WUR_2012_13/Applied_Geoscripting/Final_assignment")
+# Set working directory
 setwd=getwd()
 
-#Download Landsat raster brick and acquisition dates file from Dropbox and load them
+# Clean workspace
+rm(list = ls())
+
+## Loading data and preparing data.frame of acquisiton dates
+# Download Landsat raster brick and acquisition dates file from Dropbox and load them
 
 dl_from_dropbox <- function(x, key) {
   require(RCurl)
@@ -39,16 +37,16 @@ dl_from_dropbox <- function(x, key) {
   message(noquote(paste(x, "read into", getwd())))                        
 }
 
+# Download raster brick
 dl_from_dropbox("NDVI_Landsat_Amalia_scene222062_sub.tif", "6sgo922h2fylj2f")
 rBrick <- brick("NDVI_Landsat_Amalia_scene222062_sub.tif")
-
 # The projection needs to longlat for some analyses 
 rBrickLL <- projectRaster(rBrick, crs='+proj=longlat')
 
-
-
+# Download acquisition dates
 dl_from_dropbox("dates.csv", "i510xvtyaany813")
 df_dates <- read.csv("dates.csv", header =TRUE, stringsAsFactors= FALSE)
+
 # Extend the df_dates data.frame to have info on the year and layer
 class(df_dates$date)  # character
 df_dates$date <- as.Date(df_dates$date, format="%d/%m/%Y")
